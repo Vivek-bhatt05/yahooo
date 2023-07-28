@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
+import { Box } from '@chakra-ui/react';
 
 const ChartComponent = (historicalData) => {
 
@@ -32,7 +33,7 @@ const ChartComponent = (historicalData) => {
       console.log(aapl)
   
     // Declare the chart dimensions and margins.
-    const width = 1300;
+    const width = 1500;
     const height = 500;
     const marginTop = 20;
     const marginRight = 30;
@@ -90,7 +91,7 @@ const ChartComponent = (historicalData) => {
     drawChart();
   }, []);
 
-  return <div ref={chartRef}></div>;
+  return <Box marginTop='100px' ref={chartRef}></Box>;
 
 }
 
