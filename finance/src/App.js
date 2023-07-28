@@ -1,12 +1,13 @@
 import {useState } from "react";
-import protobuf from 'protobufjs';
-import {Buffer} from "buffer";
+// import protobuf from 'protobufjs';
+// import {Buffer} from "buffer";
 import { Box, Button, Heading, Input } from "@chakra-ui/react";
 import TableComp from "./components/Table";
+import ChartComponent from "./components/ChartComponent";
 
 function App() {
 
-  const [stock,setStock]= useState(null);
+  // let [stock,setStock]= useState([]);
   const [query,setQuery]= useState("");
   const [historicalData, setHistoricalData] = useState(null);
 
@@ -14,55 +15,51 @@ function App() {
   const handleClick=()=>{
     console.log(query);
     fetchHistoricalData(query)
-    chartData(query)
+    // chartData(query)
   }
 
-  const chartData=(query)=>{
-    const ws = new WebSocket('wss://streamer.finance.yahoo.com');
-    console.log(ws);
-     protobuf.load('./YPricingData.proto',(err,root)=>{
-      if(err){
-        console.log(err)
-      }
-      const Yaticker = root.lookupType("yaticker");
+  // const chartData=(query)=>{
+  //   const ws = new WebSocket('wss://streamer.finance.yahoo.com');
+  //   console.log(ws);
+  //    protobuf.load('./YPricingData.proto',(err,root)=>{
+  //     if(err){
+  //       console.log(err)
+  //     }
+  //     const Yaticker = root.lookupType("yaticker");
       
       
-      ws.onopen = function open() {
-        console.log('connected');
-        ws.send(JSON.stringify({
-          subscribe: [`${query}`]
-        }));
-      };
+  //     ws.onopen = function open() {
+  //       console.log('connected');
+  //       ws.send(JSON.stringify({
+  //         subscribe: [`${query}`]
+  //       }));
+  //     };
       
-      ws.onclose = function close() {
-        console.log('disconnected');
-      };
+  //     ws.onclose = function close() {
+  //       console.log('disconnected');
+  //     };
       
-      ws.onmessage = function incoming(message) {
-        console.log('comming message')
-        const next =  Yaticker.decode(new Buffer(message.data, 'base64'))
-        console.log(next)
-        setStock(next)
-      };
-    });
-  }  
+  //     ws.onmessage = function incoming(message) {
+  //       console.log('comming message')
+  //       const next =  Yaticker.decode(new Buffer(message.data, 'base64'))
+  //       console.log(next)
+  //     };
+  //   });
+  // }  
   
-  console.log(stock)
+  // console.log(stock)
 
   const fetchHistoricalData = async (symbol) => {
     try {
-    // const symbol = 'AAPL';
-    // const from = '2012-01-01';
-    // const to = '2012-12-31';
-
-      const response = await fetch(`http://localhost:3001/historical/${symbol}?from=2022-07-26&to=2023-07-26`);
+      const response = await fetch(`http://localhost:3001/historical/${symbol}?from=2021-06-28&to=2023-07-28`);
       const data = await response.json();
-      // console.log(data)
       setHistoricalData(data);
     } catch (error) {
       console.error('Error fetching historical data:', error);
     }
   };
+
+  // console.log(historicalData)
 
 
   return (
@@ -75,9 +72,13 @@ function App() {
         <Button onClick={handleClick}>Enter</Button>
       </Box>
 
-   {historicalData && historicalData.length>0 &&
-     <TableComp data={historicalData}></TableComp>
-   }
+      {historicalData && historicalData.length>0 &&
+        <ChartComponent data={historicalData}></ChartComponent>
+      }
+
+      {historicalData && historicalData.length>0 &&
+        <TableComp data={historicalData}></TableComp>
+      }
 
     </Box>
   );
